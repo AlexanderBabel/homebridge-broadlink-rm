@@ -309,9 +309,13 @@ class AirConAccessory extends BroadlinkRMAccessory {
     const { on } = data;
 
     if (state.currentHeatingCoolingState === Characteristic.TargetHeatingCoolingState.OFF && config.turnOnWhenOff) {
-      log(`${name} sendTemperature (sending "on" hex before sending temperature)`);
+      log(`${name} sending "on" hex before sending temperature`);
 
-      if (on) await this.performSend(on);
+      if (on) {
+        await this.performSend(on);
+      } else {
+        log(`\x1b[31m[CONFIG ERROR] \x1b[0m ${name} No On Hex configured, but turnOnWhenOff enabled`);
+      }
 
       return true;
     }
