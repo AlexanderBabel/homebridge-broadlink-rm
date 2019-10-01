@@ -168,7 +168,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
   async setTargetHeatingCoolingState (hexData, previousValue) {
     const { HeatingCoolingConfigKeys, HeatingCoolingStates, config, data, host, log, name, serviceManager, state, debug } = this;
-    const { preventResendHex, defaultCoolTemperature, defaultHeatTemperature, replaceAutoMode } = config;
+    const { preventResendHex, defaultCoolTemperature, defaultHeatTemperature, replaceAutoMode, turnOnWhenOff } = config;
 
     const targetHeatingCoolingState = HeatingCoolingConfigKeys[state.targetHeatingCoolingState];
     const lastUsedHeatingCoolingState = HeatingCoolingConfigKeys[state.lastUsedHeatingCoolingState];
@@ -186,12 +186,19 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
       return;
     }
+    
+    if (previousValue === Characteristic.TargetHeatingCoolingState.OFF) {
+      this.previouslyOff = true;
+      
+      //Turn the unit on first if required, and defined
+      if (state.targetHeatingCoolingState !== Characteristic.TargetHeatingCoolingState.OFF && turnOnWhenOff){
+        if (data.on) await this.performSend(data.on);
+      }
+    }
 
     // Perform the auto -> cool/heat conversion if `replaceAutoMode` is specified
     if (replaceAutoMode && targetHeatingCoolingState === 'auto') {
       log(`${name} setTargetHeatingCoolingState (converting from auto to ${replaceAutoMode})`);
-
-      if (previousValue === Characteristic.TargetHeatingCoolingState.OFF) this.previouslyOff = true;
       this.updateServiceTargetHeatingCoolingState(HeatingCoolingStates[replaceAutoMode]);
 
       return;
@@ -200,8 +207,6 @@ class AirConAccessory extends BroadlinkRMAccessory {
     let temperature = state.targetTemperature;
     let mode = HeatingCoolingConfigKeys[state.targetHeatingCoolingState];
     
-    if (previousValue === Characteristic.TargetHeatingCoolingState.OFF) this.previouslyOff = true;
-
     if (state.currentHeatingCoolingState !== state.targetHeatingCoolingState){
       // Selecting a heating/cooling state allows a default temperature to be used for the given state.
       if (state.targetHeatingCoolingState === Characteristic.TargetHeatingCoolingState.HEAT) {
