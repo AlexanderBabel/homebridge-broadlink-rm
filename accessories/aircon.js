@@ -168,7 +168,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
   async setTargetHeatingCoolingState (hexData, previousValue) {
     const { HeatingCoolingConfigKeys, HeatingCoolingStates, config, data, host, log, name, serviceManager, state, debug } = this;
-    const { preventResendHex, defaultCoolTemperature, defaultHeatTemperature, replaceAutoMode, turnOnWhenOff } = config;
+    const { preventResendHex, defaultCoolTemperature, defaultHeatTemperature, replaceAutoMode } = config;
 
     const targetHeatingCoolingState = HeatingCoolingConfigKeys[state.targetHeatingCoolingState];
     const lastUsedHeatingCoolingState = HeatingCoolingConfigKeys[state.lastUsedHeatingCoolingState];
@@ -187,15 +187,13 @@ class AirConAccessory extends BroadlinkRMAccessory {
       return;
     }
     
-    if (previousValue === Characteristic.TargetHeatingCoolingState.OFF) {
-      this.previouslyOff = true;
+    if (previousValue === Characteristic.TargetHeatingCoolingState.OFF) this.previouslyOff = true;
       
-      //Turn the unit on first if required, and defined
-      if (state.targetHeatingCoolingState !== Characteristic.TargetHeatingCoolingState.OFF && turnOnWhenOff){
-        log(`${name} turning on unit based on turnOnWhenOff: ${turnOnWhenOff}`);
-        if (data.on) await this.performSend(data.on);
-      }
-    }
+    // If the air-conditioner is turned off then turn it on first and try this again
+    if (this.checkTurnOnWhenOff()) {
+      this.turnOnWhenOffDelayPromise = delayForDuration(.3);
+      await this.turnOnWhenOffDelayPromise
+    } 
 
     // Perform the auto -> cool/heat conversion if `replaceAutoMode` is specified
     if (replaceAutoMode && targetHeatingCoolingState === 'auto') {
@@ -246,12 +244,6 @@ class AirConAccessory extends BroadlinkRMAccessory {
     const { preventResendHex, defaultCoolTemperature, heatTemperature, ignoreTemperatureWhenOff, sendTemperatureOnlyWhenOff } = config;
 
     if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} Potential sendTemperature (${temperature})`);
-
-    // If the air-conditioner is turned off then turn it on first and try this again
-    if (this.checkTurnOnWhenOff()) {
-      this.turnOnWhenOffDelayPromise = delayForDuration(.3);
-      await this.turnOnWhenOffDelayPromise
-    }
 
     // Ignore Temperature if off, staying off - and set to ignore
     if (!state.currentHeatingCoolingState && !state.targetHeatingCoolingState && ignoreTemperatureWhenOff) {
