@@ -192,6 +192,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
       
       //Turn the unit on first if required, and defined
       if (state.targetHeatingCoolingState !== Characteristic.TargetHeatingCoolingState.OFF && turnOnWhenOff){
+        log(`${name} turning on unit based on turnOnWhenOff: ${turnOnWhenOff}`);
         if (data.on) await this.performSend(data.on);
       }
     }
