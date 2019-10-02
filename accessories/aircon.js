@@ -331,8 +331,8 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     if (pseudoDeviceTemperature !== undefined) return;
 
-    //Force w1 and file devices to a 5 minute refresh
-    if (w1DeviceID || temperatureFilePath) config.temperatureUpdateFrequency = 300;
+    //Force w1 and file devices to a 10 minute refresh
+    if (w1DeviceID || temperatureFilePath) config.temperatureUpdateFrequency = 600;
 
     const device = getDevice({ host, log });
 
@@ -347,8 +347,9 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     log(`${name} monitorTemperature`);
 
-    device.on('temperature', this.onTemperature.bind(this));
-    device.checkTemperature();
+    // this call appears to be creating duplicate calls and delaying status refreshes
+    // device.on('temperature', this.onTemperature.bind(this));
+    // device.checkTemperature();
 
     this.updateTemperatureUI();
     if (!config.isUnitTest) setInterval(this.updateTemperatureUI.bind(this), config.temperatureUpdateFrequency * 1000)
