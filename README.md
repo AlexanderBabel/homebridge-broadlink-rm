@@ -52,6 +52,13 @@ key | description
 data | Hex data stored as string.
 pseudo-mode (optional) | The mode we set when this hex is sent. i.e. "heat" or "cool". For graphical purposes only (hence use of the term "pseudo"). Not recommended for ModeX key-values.
 
+### Light Accessory
+
+#### "data" key-value object
+key | description
+--- | -----------
+white | A hex code string to be sent when the light colour is white (or very low saturation).
+
 ### TV Accessory
 
 key | description | example | default
