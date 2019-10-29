@@ -67,10 +67,10 @@ class LightAccessory extends SwitchAccessory {
         serviceManager.refreshCharacteristicUI(Characteristic.On);
 
         if (on) {
-          log(`${name} setHue: (turn on, wait ${onDelay}s)`);
+          log(`${name} setSaturation: (turn on, wait ${onDelay}s)`);
           await this.performSend(on);
 
-          log(`${name} setHue: (wait ${onDelay}s then send data)`);
+          log(`${name} setSaturation: (wait ${onDelay}s then send data)`);
           this.onDelayTimeoutPromise = delayForDuration(onDelay);
           await this.onDelayTimeoutPromise;
         }
@@ -81,7 +81,7 @@ class LightAccessory extends SwitchAccessory {
       // Check for White colour and force the white hex code if found, and configured
       if (state.saturation < 10 && data[`white`]) {
         hexData = data[`white`];
-        log(`${name} setHue: (closest: white)`);
+        log(`${name} setSaturation: (closest: white)`);
         await this.performSend(hexData);
       }
     });
