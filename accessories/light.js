@@ -54,7 +54,37 @@ class LightAccessory extends SwitchAccessory {
   }
 
   async setSaturation () {
-    
+    await catchDelayCancelError(async () => {
+      const { config, data, host, log, name, state, debug, serviceManager} = this;
+      const { onDelay } = config;
+      const { off, on } = data;
+
+      this.reset();
+
+      if (!state.switchState) {
+
+        state.switchState = true;
+        serviceManager.refreshCharacteristicUI(Characteristic.On);
+
+        if (on) {
+          log(`${name} setHue: (turn on, wait ${onDelay}s)`);
+          await this.performSend(on);
+
+          log(`${name} setHue: (wait ${onDelay}s then send data)`);
+          this.onDelayTimeoutPromise = delayForDuration(onDelay);
+          await this.onDelayTimeoutPromise;
+        }
+      }
+      
+      var hexData ="";
+      log(`${name} setSaturation: (Updating to : hue:${state.hue} saturation:${state.saturation})`);
+      // Check for White colour and force the white hex code if found, and configured
+      if (state.saturation < 10 && data[`white`]) {
+        hexData = data[`white`];
+        log(`${name} setHue: (closest: white)`);
+        await this.performSend(hexData);
+      }
+    });
   }
 
   async setHue () {
@@ -85,16 +115,8 @@ class LightAccessory extends SwitchAccessory {
       const closest = foundValues.reduce((prev, curr) => Math.abs(curr - state.hue) < Math.abs(prev - state.hue) ? curr : prev);
       var hexData ="";
 
-      log(`${name} setHue: (Updating to : hue:${state.hue} saturation:${state.saturation})`);
-      // Check for White colour and force the white hex code if found, and configured
-      if (state.saturation < 10 && data[`white`]) {
-        hexData = data[`white`];
-        log(`${name} setHue: (closest: white)`);
-      }
-      else{
-          hexData = data[`hue${closest}`];
-          log(`${name} setHue: (closest: hue${closest})`);
-      }
+      hexData = data[`hue${closest}`];
+      log(`${name} setHue: (closest: hue${closest})`);
       
       await this.performSend(hexData);
     });
