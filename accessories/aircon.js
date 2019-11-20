@@ -134,11 +134,11 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     if (!autoSwitchName) return;
 
-    log(`${name} Linking autoSwitch "${autoSwitchName}"`)
+    log(`\x1b[33m[${name}]\x1b[0m Linking autoSwitch "${autoSwitchName}"`)
 
     const autoSwitchAccessories = accessories.filter(accessory => accessory.name === autoSwitchName);
 
-    if (autoSwitchAccessories.length === 0) return log(`${name} No accessory could be found with the name "${autoSwitchName}". Please update the "autoSwitchName" value or add a matching switch accessory.`);
+    if (autoSwitchAccessories.length === 0) return log(`\x1b[33m[${name}]\x1b[0m No accessory could be found with the name "${autoSwitchName}". Please update the "autoSwitchName" value or add a matching switch accessory.`);
 
     this.autoSwitchAccessory = autoSwitchAccessories[0];
   }
@@ -198,7 +198,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     // Perform the auto -> cool/heat conversion if `replaceAutoMode` is specified
     if (replaceAutoMode && targetHeatingCoolingState === 'auto') {
-      log(`${name} setTargetHeatingCoolingState (converting from auto to ${replaceAutoMode})`);
+      log(`\x1b[33m[${name}]\x1b[0m setTargetHeatingCoolingState (converting from auto to ${replaceAutoMode})`);
       this.updateServiceTargetHeatingCoolingState(HeatingCoolingStates[replaceAutoMode]);
 
       return;
@@ -228,7 +228,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
         await this.performSend(hexData);
       }
       
-      this.log(`${name} sentMode (${mode})`);
+      this.log(`\x1b[33m[${name}]\x1b[0m sentMode (${mode})`);
 
       //Force Temperature send
       delayForDuration(0.25).then(() => {
@@ -246,11 +246,11 @@ class AirConAccessory extends BroadlinkRMAccessory {
     const { HeatingCoolingConfigKeys, HeatingCoolingStates, config, data, host, log, name, state, debug } = this;
     const { preventResendHex, defaultCoolTemperature, heatTemperature, ignoreTemperatureWhenOff, sendTemperatureOnlyWhenOff } = config;
 
-    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} Potential sendTemperature (${temperature})`);
+    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m Potential sendTemperature (${temperature})`);
 
     // Ignore Temperature if off, staying off - and set to ignore
     if (!state.targetHeatingCoolingState && ignoreTemperatureWhenOff) {
-      log(`${name} Ignoring sendTemperature due to "ignoreTemperatureWhenOff": true`);
+      log(`\x1b[33m[${name}]\x1b[0m Ignoring sendTemperature due to "ignoreTemperatureWhenOff": true`);
       return;
     }
 
@@ -268,7 +268,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
     if((previousTemperature !== finalTemperature) || (state.firstTemperatureUpdate && !preventResendHex)){
       //Set the temperature
       await this.performSend(hexData.data);
-      this.log(`${name} sentTemperature (${state.targetTemperature})`);
+      this.log(`\x1b[33m[${name}]\x1b[0m sentTemperature (${state.targetTemperature})`);
       state.firstTemperatureUpdate = false;
     }
   }
@@ -282,11 +282,11 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     if (!hexData) {
         // Mode based code not found, try mode-less
-        this.log(`${name} No ${mode} HEX code found for ${temperature}`);
+        this.log(`\x1b[33m[${name}]\x1b[0m No ${mode} HEX code found for ${temperature}`);
         let hexData = data[`temperature${temperature}`];
     } else {
         if (hexData['pseudo-mode']) {
-            this.log(`\x1b[36m[INFO] \x1b[0m${name} Configuration found for ${mode}${temperature} with pseudo-mode. Pseudo-mode will replace the configured mode.`);
+            this.log(`\x1b[36m[INFO] \x1b[0m\x1b[33m[${name}]\x1b[0m Configuration found for ${mode}${temperature} with pseudo-mode. Pseudo-mode will replace the configured mode.`);
         }
     }
 
@@ -300,7 +300,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
         or provide the default temperature:
         \x1b[33m { "temperature${defaultTemperature}": { "data": "HEXCODE", "pseudo-mode" : "heat/cool" } }\x1b[0m`);
 
-      this.log(`${name} Update to default temperature (${defaultTemperature})`);
+      this.log(`\x1b[33m[${name}]\x1b[0m Update to default temperature (${defaultTemperature})`);
       finalTemperature = defaultTemperature;
     }
 
@@ -312,12 +312,12 @@ class AirConAccessory extends BroadlinkRMAccessory {
     const { on } = data;
 
     if (state.currentHeatingCoolingState === Characteristic.TargetHeatingCoolingState.OFF && config.turnOnWhenOff) {
-      log(`${name} sending "on" hex before sending temperature`);
+      log(`\x1b[33m[${name}]\x1b[0m sending "on" hex before sending temperature`);
 
       if (on) {
         await this.performSend(on);
       } else {
-        log(`\x1b[31m[CONFIG ERROR] \x1b[0m ${name} No On Hex configured, but turnOnWhenOff enabled`);
+        log(`\x1b[31m[CONFIG ERROR] \x1b[0m \x1b[33m[${name}]\x1b[0m No On Hex configured, but turnOnWhenOff enabled`);
       }
 
       return true;
@@ -336,7 +336,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     //To avoid high disk IO set w1 and file temperature updates to a minimum of every 1 minute.
     if (temperatureFilePath && config.temperatureUpdateFrequency < 60){
-      log(`\x1b[36m[INFO]\x1b[0m ${name} temperatureUpdateFrequency below Disk IO minimum of 60, forced to 60 seconds.`);
+      log(`\x1b[36m[INFO]\x1b[0m \x1b[33m[${name}]\x1b[0m temperatureUpdateFrequency below Disk IO minimum of 60, forced to 60 seconds.`);
       config.temperatureUpdateFrequency = 60;
     }
 
@@ -351,7 +351,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
       return;
     }
 
-    log(`${name} monitorTemperature`);
+    log(`\x1b[33m[${name}]\x1b[0m monitorTemperature`);
 
     // this call appears to be creating duplicate calls and delaying status refreshes
     // device.on('temperature', this.onTemperature.bind(this));
@@ -373,7 +373,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     state.currentTemperature = temperature;
 
-    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} onTemperature (${temperature})`);
+    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m onTemperature (${temperature})`);
 
     if (temperature > config.maxTemperature) {
       log(`\x1b[36m[INFO]\x1b[0m Reported temperature (${temperature}) is too high, setting to \x1b[33mmaxTemperature\x1b[0m (${maxTemperature}).`)
@@ -400,7 +400,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
     // Clear the previous callback
     if (Object.keys(this.temperatureCallbackQueue).length > 1) {
       if (state.currentTemperature) {
-        log(`${name} addTemperatureCallbackToQueue (clearing previous callback, using existing temperature)`);
+        log(`\x1b[33m[${name}]\x1b[0m addTemperatureCallbackToQueue (clearing previous callback, using existing temperature)`);
 
         this.processQueuedTemperatureCallbacks(state.currentTemperature);
       }
@@ -438,7 +438,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     if (!device || device.state === 'inactive') {
       if (device && device.state === 'inactive') {
-        log(`${name} addTemperatureCallbackToQueue (device no longer active, using existing temperature)`);
+        log(`\x1b[33m[${name}]\x1b[0m addTemperatureCallbackToQueue (device no longer active, using existing temperature)`);
       }
 
       this.processQueuedTemperatureCallbacks(state.currentTemperature || 0);
@@ -447,27 +447,27 @@ class AirConAccessory extends BroadlinkRMAccessory {
     }
 
     device.checkTemperature();
-    log(`${name} addTemperatureCallbackToQueue (requested temperature from device, waiting)`);
+    log(`\x1b[33m[${name}]\x1b[0m addTemperatureCallbackToQueue (requested temperature from device, waiting)`);
   }
 
   updateTemperatureFromFile () {
     const { config, debug, host, log, name, state } = this;
     const { temperatureFilePath } = config;
 
-    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} updateTemperatureFromFile reading file: ${temperatureFilePath}`);
+    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m updateTemperatureFromFile reading file: ${temperatureFilePath}`);
 
     fs.readFile(temperatureFilePath, 'utf8', (err, temperature) => {
       if (err) {
-         log(`\x1b[31m[ERROR] \x1b[0m${name} updateTemperatureFromFile\n\n${err.message}`);
+         log(`\x1b[31m[ERROR] \x1b[0m\x1b[33m[${name}]\x1b[0m updateTemperatureFromFile\n\n${err.message}`);
       }
 
       if (temperature === undefined || temperature.trim().length === 0) {
-        log(`\x1b[33m[WARNING]\x1b[0m ${name} updateTemperatureFromFile error reading file: ${temperatureFilePath}, using previous Temperature`);
+        log(`\x1b[33m[WARNING]\x1b[0m \x1b[33m[${name}]\x1b[0m updateTemperatureFromFile error reading file: ${temperatureFilePath}, using previous Temperature`);
         temperature = (state.currentTemperature || 0);
       }
 
       temperature = parseFloat(temperature);
-      if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} updateTemperatureFromFile (parsed temperature: ${temperature})`);
+      if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m updateTemperatureFromFile (parsed temperature: ${temperature})`);
 
       this.onTemperature(temperature);
     });
@@ -481,22 +481,22 @@ class AirConAccessory extends BroadlinkRMAccessory {
     var fName = W1PATH + "/" + w1DeviceID + "/w1_slave";
     var temperature;
 
-    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} updateTemperatureFromW1 reading file: ${fName}`);
+    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m updateTemperatureFromW1 reading file: ${fName}`);
 
     fs.readFile(fName, 'utf8', (err, data) => {
       if (err) {
-        log(`\x1b[31m[ERROR] \x1b[0m${name} updateTemperatureFromW1\n\n${err.message}`);
+        log(`\x1b[31m[ERROR] \x1b[0m\x1b[33m[${name}]\x1b[0m updateTemperatureFromW1\n\n${err.message}`);
       }
 
       if(data.includes("t=")){
         var matches = data.match(/t=([0-9]+)/);
         temperature = parseInt(matches[1]) / 1000;
       }else{
-        log(`\x1b[33m[WARNING]\x1b[0m ${name} updateTemperatureFromW1 error reading file: ${fName}, using previous Temperature`);
+        log(`\x1b[33m[WARNING]\x1b[0m \x1b[33m[${name}]\x1b[0m updateTemperatureFromW1 error reading file: ${fName}, using previous Temperature`);
         temperature = (state.currentTemperature || 0);
       }
 
-      if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} updateTemperatureFromW1 (parsed temperature: ${temperature})`);
+      if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m updateTemperatureFromW1 (parsed temperature: ${temperature})`);
       this.onTemperature(temperature);
     });
   }
@@ -528,7 +528,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     // Some devices don't include a thermometer and so we can use `pseudoDeviceTemperature` instead
     if (pseudoDeviceTemperature !== undefined) {
-      log(`${name} getCurrentTemperature (using pseudoDeviceTemperature ${pseudoDeviceTemperature} from config)`);
+      log(`\x1b[33m[${name}]\x1b[0m getCurrentTemperature (using pseudoDeviceTemperature ${pseudoDeviceTemperature} from config)`);
 
       return callback(null, pseudoDeviceTemperature);
     }
@@ -541,7 +541,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
     let { autoHeatTemperature, autoCoolTemperature, minimumAutoOnOffDuration } = config;
 
     if (this.shouldIgnoreAutoOnOff) {
-      this.log(`${name} checkTemperatureForAutoOn (ignore within ${minimumAutoOnOffDuration}s of previous auto-on/off due to "minimumAutoOnOffDuration")`);
+      this.log(`\x1b[33m[${name}]\x1b[0m checkTemperatureForAutoOn (ignore within ${minimumAutoOnOffDuration}s of previous auto-on/off due to "minimumAutoOnOffDuration")`);
 
       return;
     }
@@ -549,30 +549,30 @@ class AirConAccessory extends BroadlinkRMAccessory {
     if (!autoHeatTemperature && !autoCoolTemperature) return;
 
     if (!this.isAutoSwitchOn()) {
-      this.log(`${name} checkTemperatureForAutoOnOff (autoSwitch is off)`);
+      this.log(`\x1b[33m[${name}]\x1b[0m checkTemperatureForAutoOnOff (autoSwitch is off)`);
 
       return;
     }
 
-    this.log(`${name} checkTemperatureForAutoOnOff`);
+    this.log(`\x1b[33m[${name}]\x1b[0m checkTemperatureForAutoOnOff`);
 
     if (autoHeatTemperature && temperature < autoHeatTemperature) {
       this.state.isRunningAutomatically = true;
 
-      this.log(`${name} checkTemperatureForAutoOnOff (${temperature} < ${autoHeatTemperature}: auto heat)`);
+      this.log(`\x1b[33m[${name}]\x1b[0m checkTemperatureForAutoOnOff (${temperature} < ${autoHeatTemperature}: auto heat)`);
       serviceManager.setCharacteristic(Characteristic.TargetHeatingCoolingState, Characteristic.TargetHeatingCoolingState.HEAT);
     } else if (autoCoolTemperature && temperature > autoCoolTemperature) {
       this.state.isRunningAutomatically = true;
 
-      this.log(`${name} checkTemperatureForAutoOnOff (${temperature} > ${autoCoolTemperature}: auto cool)`);
+      this.log(`\x1b[33m[${name}]\x1b[0m checkTemperatureForAutoOnOff (${temperature} > ${autoCoolTemperature}: auto cool)`);
       serviceManager.setCharacteristic(Characteristic.TargetHeatingCoolingState, Characteristic.TargetHeatingCoolingState.COOL);
     } else {
-      this.log(`${name} checkTemperatureForAutoOnOff (temperature is ok)`);
+      this.log(`\x1b[33m[${name}]\x1b[0m checkTemperatureForAutoOnOff (temperature is ok)`);
 
       if (this.state.isRunningAutomatically) {
         this.isAutomatedOff = true;
 
-        this.log(`${name} checkTemperatureForAutoOnOff (auto off)`);
+        this.log(`\x1b[33m[${name}]\x1b[0m checkTemperatureForAutoOnOff (auto off)`);
         serviceManager.setCharacteristic(Characteristic.TargetHeatingCoolingState, Characteristic.TargetHeatingCoolingState.OFF);
       } else {
         return;
@@ -599,7 +599,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
     const { debug, log, name } = this;
 
     if (identifier !== 'unknown' && identifier !== 'temperature') {
-      log(`\x1b[31m[ERROR] \x1b[0m${name} onMQTTMessage (mqtt message received with unexpected identifier: ${identifier}, ${message.toString()})`);
+      log(`\x1b[31m[ERROR] \x1b[0m\x1b[33m[${name}]\x1b[0m onMQTTMessage (mqtt message received with unexpected identifier: ${identifier}, ${message.toString()})`);
 
       return;
     }
@@ -608,7 +608,7 @@ class AirConAccessory extends BroadlinkRMAccessory {
 
     let temperature = this.mqttValuesTemp[identifier];
 
-    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} onMQTTMessage (raw value: ${temperature})`);
+    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m onMQTTMessage (raw value: ${temperature})`);
 
     try {
       const temperatureJSON = JSON.parse(temperature);
@@ -628,16 +628,16 @@ class AirConAccessory extends BroadlinkRMAccessory {
     } catch (err) {}
 
     if (temperature === undefined || (typeof temperature === 'string' && temperature.trim().length === 0)) {
-      log(`\x1b[31m[ERROR] \x1b[0m${name} onMQTTMessage (mqtt temperature temperature not found)`);
+      log(`\x1b[31m[ERROR] \x1b[0m\x1b[33m[${name}]\x1b[0m onMQTTMessage (mqtt temperature temperature not found)`);
 
       return;
     }
 
-    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} onMQTTMessage (raw value 2: ${temperature.trim()})`);
+    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m onMQTTMessage (raw value 2: ${temperature.trim()})`);
 
     temperature = parseFloat(temperature);
 
-    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m ${name} onMQTTMessage (parsed temperature: ${temperature})`);
+    if (debug) log(`\x1b[34m[DEBUG]\x1b[0m \x1b[33m[${name}]\x1b[0m onMQTTMessage (parsed temperature: ${temperature})`);
 
     this.mqttValues[identifier] = temperature;
     this.updateTemperatureUI();
