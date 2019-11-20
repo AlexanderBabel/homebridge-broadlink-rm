@@ -35,7 +35,7 @@ class LightAccessory extends SwitchAccessory {
     if (state.switchState) {
       const brightness = (useLastKnownBrightness && state.brightness > 0) ? state.brightness : defaultBrightness;
       if (brightness !== state.brightness || previousValue !== state.switchState) {
-        log(`${name} setSwitchState: (brightness: ${brightness})`);
+        log(`\x1b[33m[${name}]\x1b[0m setSwitchState: (brightness: ${brightness})`);
 
         state.switchState = false;
         serviceManager.setCharacteristic(Characteristic.Brightness, brightness);
@@ -71,10 +71,10 @@ class LightAccessory extends SwitchAccessory {
         serviceManager.refreshCharacteristicUI(Characteristic.On);
 
         if (on) {
-          log(`${name} setHue: (turn on, wait ${onDelay}s)`);
+          log(`\x1b[33m[${name}]\x1b[0m setHue: (turn on, wait ${onDelay}s)`);
           await this.performSend(on);
 
-          log(`${name} setHue: (wait ${onDelay}s then send data)`);
+          log(`\x1b[33m[${name}]\x1b[0m setHue: (wait ${onDelay}s then send data)`);
           this.onDelayTimeoutPromise = delayForDuration(onDelay);
           await this.onDelayTimeoutPromise;
         }
@@ -85,7 +85,7 @@ class LightAccessory extends SwitchAccessory {
       const closest = foundValues.reduce((prev, curr) => Math.abs(curr - state.hue) < Math.abs(prev - state.hue) ? curr : prev);
       const hexData = data[`hue${closest}`];
 
-      log(`${name} setHue: (closest: hue${closest})`);
+      log(`\x1b[33m[${name}]\x1b[0m setHue: (closest: hue${closest})`);
       await this.performSend(hexData);
     });
   }
@@ -117,10 +117,10 @@ class LightAccessory extends SwitchAccessory {
           serviceManager.refreshCharacteristicUI(Characteristic.On);
     
           if (on) {
-            log(`${name} setBrightness: (turn on, wait ${onDelay}s)`);
+            log(`\x1b[33m[${name}]\x1b[0m setBrightness: (turn on, wait ${onDelay}s)`);
             await this.performSend(on);
     
-            log(`${name} setHue: (wait ${onDelay}s then send data)`);
+            log(`\x1b[33m[${name}]\x1b[0m setHue: (wait ${onDelay}s then send data)`);
             this.onDelayTimeoutPromise = delayForDuration(onDelay);
             await this.onDelayTimeoutPromise;
           }
@@ -134,10 +134,10 @@ class LightAccessory extends SwitchAccessory {
         const closest = foundValues.reduce((prev, curr) => Math.abs(curr - state.brightness) < Math.abs(prev - state.brightness) ? curr : prev);
         const hexData = data[`brightness${closest}`];
     
-        log(`${name} setBrightness: (closest: ${closest})`);
+        log(`\x1b[33m[${name}]\x1b[0m setBrightness: (closest: ${closest})`);
         await this.performSend(hexData);
       } else {
-        log(`${name} setBrightness: (off)`);
+        log(`\x1b[33m[${name}]\x1b[0m setBrightness: (off)`);
         await this.performSend(off);
       }
 
