@@ -31,12 +31,12 @@ class FanAccessory extends SwitchAccessory {
 
     if (foundSpeeds.length === 0) {
 
-      return log(`${name} setFanSpeed: No fan speed hex codes provided.`)
+      return log(`\x1b[33m[${name}]\x1b[0m setFanSpeed: No fan speed hex codes provided.`)
     }
 
     // Find speed closest to the one requested
     const closest = foundSpeeds.reduce((prev, curr) => Math.abs(curr - state.fanSpeed) < Math.abs(prev - state.fanSpeed) ? curr : prev);
-    log(`${name} setFanSpeed: (closest: ${closest})`);
+    log(`\x1b[33m[${name}]\x1b[0m setFanSpeed: (closest: ${closest})`);
 
     if (this.lastFanSpeed === closest) {
       return;
