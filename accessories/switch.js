@@ -129,7 +129,7 @@ class SwitchAccessory extends BroadlinkRMAccessory {
       let { disableAutomaticOff, enableAutoOff, onDuration } = config;
 
       if (state.switchState && enableAutoOff) {
-        log(`${name} setSwitchState: (automatically turn off in ${onDuration} seconds)`);
+        log(`\x1b[33m[${name}]\x1b[0m setSwitchState: (automatically turn off in ${onDuration} seconds)`);
 
         this.autoOffTimeoutPromise = delayForDuration(onDuration);
         await this.autoOffTimeoutPromise;
@@ -145,7 +145,7 @@ class SwitchAccessory extends BroadlinkRMAccessory {
       let { disableAutomaticOn, enableAutoOn, offDuration } = config;
 
       if (!state.switchState && enableAutoOn) {
-        log(`${name} setSwitchState: (automatically turn on in ${offDuration} seconds)`);
+        log(`\x1b[33m[${name}]\x1b[0m setSwitchState: (automatically turn on in ${offDuration} seconds)`);
 
         this.autoOnTimeoutPromise = delayForDuration(offDuration);
         await this.autoOnTimeoutPromise;
