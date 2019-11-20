@@ -64,7 +64,7 @@ class WindowCoveringAccessory extends BroadlinkRMAccessory {
       const closeCompletely = await this.checkOpenOrCloseCompletely();
       if (closeCompletely) return;
 
-      log(`${name} setTargetPosition: (currentPosition: ${state.currentPosition})`);
+      log(`\x1b[33m[${name}]\x1b[0m setTargetPosition: (currentPosition: ${state.currentPosition})`);
 
       // Determine if we're opening or closing
       let difference = state.targetPosition - state.currentPosition;
@@ -88,7 +88,7 @@ class WindowCoveringAccessory extends BroadlinkRMAccessory {
       const newPositionState = state.opening ? Characteristic.PositionState.INCREASING : Characteristic.PositionState.DECREASING;
       serviceManager.setCharacteristic(Characteristic.PositionState, newPositionState);
 
-      log(`${name} setTargetPosition: currently ${state.currentPosition}%, moving to ${state.targetPosition}%`);
+      log(`\x1b[33m[${name}]\x1b[0m setTargetPosition: currently ${state.currentPosition}%, moving to ${state.targetPosition}%`);
 
       await this.performSend(hexData);
 
@@ -99,7 +99,7 @@ class WindowCoveringAccessory extends BroadlinkRMAccessory {
       const durationPerPercentage = fullOpenCloseTime / 100;
       const totalTime = durationPerPercentage * difference;
 
-      log(`${name} setTargetPosition: ${totalTime}s (${fullOpenCloseTime} / 100 * ${difference}) until auto-stop`);
+      log(`\x1b[33m[${name}]\x1b[0m setTargetPosition: ${totalTime}s (${fullOpenCloseTime} / 100 * ${difference}) until auto-stop`);
 
       this.startUpdatingCurrentPositionAtIntervals();
 
@@ -117,7 +117,7 @@ class WindowCoveringAccessory extends BroadlinkRMAccessory {
     const { sendStopAt0, sendStopAt100 } = config;
     const { stop } = data;
   
-    log(`${name} setTargetPosition: (stop window covering)`);
+    log(`\x1b[33m[${name}]\x1b[0m setTargetPosition: (stop window covering)`);
 
     // Reset the state and timers
     this.reset();
