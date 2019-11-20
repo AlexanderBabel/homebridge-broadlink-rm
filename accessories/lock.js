@@ -57,12 +57,12 @@ class LockAccessory extends BroadlinkRMAccessory {
     const { config, data, host, log, name, state, debug, serviceManager } = this;
     let { lockDuration } = config;
 
-    log(`${name} setLockCurrentState: locking for ${lockDuration}s`);
+    log(`\x1b[33m[${name}]\x1b[0m setLockCurrentState: locking for ${lockDuration}s`);
 
     this.lockingTimeoutPromise = delayForDuration(lockDuration);
     await this.lockingTimeoutPromise
 
-    log(`${name} setLockCurrentState: locked`);
+    log(`\x1b[33m[${name}]\x1b[0m setLockCurrentState: locked`);
     serviceManager.setCharacteristic(Characteristic.LockCurrentState, Characteristic.LockCurrentState.SECURED);
   }
 
@@ -70,15 +70,15 @@ class LockAccessory extends BroadlinkRMAccessory {
     const { config, data, host, log, name, state, debug, serviceManager } = this;
     let { autoLockDelay, unlockDuration } = config;
 
-    log(`${name} setLockCurrentState: unlocking for ${unlockDuration}s`);
+    log(`\x1b[33m[${name}]\x1b[0m setLockCurrentState: unlocking for ${unlockDuration}s`);
     this.unlockingTimeoutPromise = delayForDuration(unlockDuration);
     await this.unlockingTimeoutPromise;
 
-    log(`${name} setLockCurrentState: unlocked`);
+    log(`\x1b[33m[${name}]\x1b[0m setLockCurrentState: unlocked`);
     serviceManager.setCharacteristic(Characteristic.LockCurrentState, Characteristic.LockCurrentState.UNSECURED);
 
     if (autoLockDelay) {
-      log(`${name} automatically locking in ${autoLockDelay}s`);
+      log(`\x1b[33m[${name}]\x1b[0m automatically locking in ${autoLockDelay}s`);
       this.autoLockTimeoutPromise = delayForDuration(autoLockDelay);
       await this.autoLockTimeoutPromise;
 
