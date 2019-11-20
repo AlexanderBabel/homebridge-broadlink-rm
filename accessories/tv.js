@@ -133,9 +133,7 @@ class TVAccessory extends BroadlinkRMAccessory {
       let { disableAutomaticOff, enableAutoOff, onDuration } = config;
 
       if (state.switchState && enableAutoOff) {
-        log(
-          `${name} setSwitchState: (automatically turn off in ${onDuration} seconds)`
-        );
+        log(`\x1b[33m[${name}]\x1b[0m setSwitchState: (automatically turn off in ${onDuration} seconds)`);
 
         this.autoOffTimeoutPromise = delayForDuration(onDuration);
         await this.autoOffTimeoutPromise;
@@ -151,9 +149,7 @@ class TVAccessory extends BroadlinkRMAccessory {
       let { disableAutomaticOn, enableAutoOn, offDuration } = config;
 
       if (!state.switchState && enableAutoOn) {
-        log(
-          `${name} setSwitchState: (automatically turn on in ${offDuration} seconds)`
-        );
+        log(`\x1b[33m[${name}]\x1b[0m setSwitchState: (automatically turn on in ${offDuration} seconds)`);
 
         this.autoOnTimeoutPromise = delayForDuration(offDuration);
         await this.autoOnTimeoutPromise;
@@ -215,7 +211,7 @@ class TVAccessory extends BroadlinkRMAccessory {
           !data.inputs[newValue] ||
           !data.inputs[newValue].data
         ) {
-          log(`${name} Input: No input data found. Ignoring request.`);
+          log(`\x1b[33m[${name}]\x1b[0m Input: No input data found. Ignoring request.`);
           callback(null);
           return;
         }
@@ -230,7 +226,7 @@ class TVAccessory extends BroadlinkRMAccessory {
       .getCharacteristic(Characteristic.RemoteKey)
       .on('set', (newValue, callback) => {
         if (!data || !data.remote) {
-          log(`${name} RemoteKey: No remote keys found. Ignoring request.`);
+          log(`\x1b[33m[${name}]\x1b[0m RemoteKey: No remote keys found. Ignoring request.`);
           callback(null);
           return;
         }
@@ -279,7 +275,7 @@ class TVAccessory extends BroadlinkRMAccessory {
         }
 
         if (!hexData) {
-          log(`${name} RemoteKey: No IR code found for received remote input!`);
+          log(`\x1b[33m[${name}]\x1b[0m RemoteKey: No IR code found for received remote input!`);
           callback(null);
           return;
         }
@@ -300,9 +296,7 @@ class TVAccessory extends BroadlinkRMAccessory {
       .getCharacteristic(Characteristic.PowerModeSelection)
       .on('set', (newValue, callback) => {
         if (!data || !data.powerMode) {
-          log(
-            `${name} PowerModeSelection: No settings data found. Ignoring request.`
-          );
+          log(`\x1b[33m[${name}]\x1b[0m PowerModeSelection: No settings data found. Ignoring request.`);
           callback(null);
           return;
         }
@@ -318,9 +312,7 @@ class TVAccessory extends BroadlinkRMAccessory {
         }
 
         if (!hexData) {
-          log(
-            `${name} PowerModeSelection: No IR code found for received remote input!`
-          );
+          log(`\x1b[33m[${name}]\x1b[0m PowerModeSelection: No IR code found for received remote input!`);
           callback(null);
           return;
         }
@@ -344,9 +336,7 @@ class TVAccessory extends BroadlinkRMAccessory {
       .getCharacteristic(Characteristic.VolumeSelector)
       .on('set', (newValue, callback) => {
         if (!data || !data.volume) {
-          log(
-            `${name} VolumeSelector: No settings data found. Ignoring request.`
-          );
+          log(`\x1b[33m[${name}]\x1b[0m VolumeSelector: No settings data found. Ignoring request.`);
           callback(null);
           return;
         }
@@ -362,9 +352,7 @@ class TVAccessory extends BroadlinkRMAccessory {
         }
 
         if (!hexData) {
-          log(
-            `${name} VolumeSelector: No IR code found for received remote input!`
-          );
+          log(`\x1b[33m[${name}]\x1b[0m VolumeSelector: No IR code found for received remote input!`);
           callback(null);
           return;
         }
