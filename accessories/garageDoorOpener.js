@@ -62,16 +62,16 @@ class GarageDoorOpenerAccessory extends BroadlinkRMAccessory {
     // Defaults
     if (!openDuration) openDuration = openCloseDuration || 8;
 
-    log(`${name} setDoorCurrentState: opening`);
+    log(`\x1b[33m[${name}]\x1b[0m setDoorCurrentState: opening`);
     this.openingTimeoutPromise = delayForDuration(openDuration);
     await this.openingTimeoutPromise;
 
-    log(`${name} setDoorCurrentState: opened`);
+    log(`\x1b[33m[${name}]\x1b[0m setDoorCurrentState: opened`);
     serviceManager.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.OPEN);
 
     if (!autoCloseDelay) return;
 
-    log(`${name} automatically closing in ${autoCloseDelay}s`);
+    log(`\x1b[33m[${name}]\x1b[0m automatically closing in ${autoCloseDelay}s`);
     this.autoCloseTimeoutPromise = delayForDuration(autoCloseDelay);
     await this.autoCloseTimeoutPromise;
 
@@ -86,12 +86,12 @@ class GarageDoorOpenerAccessory extends BroadlinkRMAccessory {
     // Defaults
     if (!closeDuration) closeDuration = openCloseDuration || 8;
 
-    log(`${name} setDoorCurrentState: closing`);
+    log(`\x1b[33m[${name}]\x1b[0m setDoorCurrentState: closing`);
 
     this.closingTimeoutPromise = delayForDuration(closeDuration);
     await this.closingTimeoutPromise
 
-    log(`${name} setDoorCurrentState: closed`);
+    log(`\x1b[33m[${name}]\x1b[0m setDoorCurrentState: closed`);
     serviceManager.setCharacteristic(Characteristic.CurrentDoorState, Characteristic.CurrentDoorState.CLOSED);
   }
 
@@ -101,10 +101,10 @@ class GarageDoorOpenerAccessory extends BroadlinkRMAccessory {
     await this.performSend(hexData);
 
     if (!state.lockTargetState) {
-      log(`${name} setCurrentLockState: unlocked`)
+      log(`\x1b[33m[${name}]\x1b[0m setCurrentLockState: unlocked`)
       serviceManager.setCharacteristic(Characteristic.LockCurrentState, Characteristic.LockCurrentState.UNSECURED);
     } else {
-      log(`${name} setCurrentLockState: locked`)
+      log(`\x1b[33m[${name}]\x1b[0m setCurrentLockState: locked`)
       serviceManager.setCharacteristic(Characteristic.LockCurrentState, Characteristic.LockCurrentState.SECURED);
     }
   }
