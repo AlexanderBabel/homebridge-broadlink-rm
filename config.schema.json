@@ -26,39 +26,41 @@
 				"default": false
 			},
 			"accessories": {
-				"Title": "Accessories",
 				"type": "array",
 				"items": [{
-					"accessories.name": {
-						"title": "Name",
-						"type": "string"
-					},
-					"accessories.type": {
-						"title": "Type",
-						"type": "string"
-					},
-					"accessories.enableAutoOff": {
-						"title": "enableAutoOff",
-						"type": "boolean"
-					},
-					"accessories.onDuration": {
-						"title": "onDuration",
-						"type": "integer"
-					},
-					"accessories.data": {
-						"title": "Data",
-						"type": "array",
-						"items": [{
-							"on": {
-								"title": "on",
-								"type": "string"
-							},
-							"off": {
-								"title": "off",
-								"type": "string"
-							}
-						}]
-					}
+					"title": "Accessory",
+					"type": "fieldset",
+					"items": [{
+							"title": "name",
+							"type": "string"
+						},
+						{
+							"title": "type",
+							"type": "string"
+						},
+						{
+							"title": "enableAutoOff",
+							"type": "boolean"
+						},
+						{
+							"title": "onDuration",
+							"type": "integer"
+						},
+						{
+							"title": "data",
+							"type": "array",
+							"items": [{
+								"on": {
+									"title": "on",
+									"type": "string"
+								},
+								"off": {
+									"title": "off",
+									"type": "string"
+								}
+							}]
+						}
+					]
 				}]
 			}
 		}
@@ -75,13 +77,12 @@
 				"title": "Accessory",
 				"type": "fieldset",
 				"expanded": true,
-				"items": [
-					{
-						"key": "accessories.name",
+				"items": [{
+						"key": "accessories[].name",
 						"type": "string"
 					},
 					{
-						"key": "accessories.type",
+						"key": "accessories[].type",
 						"type": "select",
 						"titleMap": [{
 								"name": "Light Switch",
@@ -98,8 +99,8 @@
 						]
 					},
 					{
-						"key": "accessories.data",
-						"type": "array",
+						"key": "accessories[].data",
+						"type": "fieldset",
 						"items": [{
 								"name": "on",
 								"type": "string"
