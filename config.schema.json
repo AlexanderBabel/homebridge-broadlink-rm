@@ -1,0 +1,117 @@
+{
+	"pluginAlias": "BroadlinkRM",
+	"pluginType": "platform",
+	"singular": true,
+	"headerDisplay": "This plugin is provided by ",
+	"footerDisplay": "",
+	"schema": {
+		"type": "object",
+		"properties": {
+			"name": {
+				"type": "string",
+				"default": "Broadlink RM",
+				"description": "Plugin name as displayed in the homebridge log.",
+				"required": true
+			},
+			"hideScanFrequencyButton": {
+				"type": "boolean",
+				"default": false
+			},
+			"hideLearnButton": {
+				"type": "boolean",
+				"default": false
+			},
+			"hideWelcomeMessage": {
+				"type": "boolean",
+				"default": false
+			},
+			"accessories": {
+				"Title": "Accessories",
+				"type": "array",
+				"items": [{
+					"accessories.name": {
+						"title": "Name",
+						"type": "string"
+					},
+					"accessories.type": {
+						"title": "Type",
+						"type": "string"
+					},
+					"accessories.enableAutoOff": {
+						"title": "enableAutoOff",
+						"type": "boolean"
+					},
+					"accessories.onDuration": {
+						"title": "onDuration",
+						"type": "integer"
+					},
+					"accessories.data": {
+						"title": "Data",
+						"type": "array",
+						"items": [{
+							"on": {
+								"title": "on",
+								"type": "string"
+							},
+							"off": {
+								"title": "off",
+								"type": "string"
+							}
+						}]
+					}
+				}]
+			}
+		}
+	},
+	"form": [
+		"name",
+		"hideScanFrequencyButton",
+		"hideLearnButton",
+		"hideWelcomeMessage",
+		{
+			"key": "accessories",
+			"type": "array",
+			"items": [{
+				"title": "Accessory",
+				"type": "fieldset",
+				"expanded": true,
+				"items": [
+					{
+						"key": "accessories.name",
+						"type": "string"
+					},
+					{
+						"key": "accessories.type",
+						"type": "select",
+						"titleMap": [{
+								"name": "Light Switch",
+								"value": "light"
+							},
+							{
+								"name": "Switch",
+								"value": "switch"
+							},
+							{
+								"name": "Television",
+								"value": "TV"
+							}
+						]
+					},
+					{
+						"key": "accessories.data",
+						"type": "array",
+						"items": [{
+								"name": "on",
+								"type": "string"
+							},
+							{
+								"name": "off",
+								"type": "string"
+							}
+						]
+					}
+				]
+			}]
+		}
+	]
+} 
