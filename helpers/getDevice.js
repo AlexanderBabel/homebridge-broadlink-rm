@@ -4,10 +4,11 @@ const delayForDuration = require('./delayForDuration')
 
 const pingFrequency = 3000;
 const pingTimeout = 5;
+const pingRetries = 2;
 
 const startPing = (device, log) => {
   device.state = 'unknown';
-  var retryCount = 1;
+  var retryCount = 0;
 
   setInterval(() => {
     try {
@@ -17,18 +18,21 @@ const startPing = (device, log) => {
            active = false;
         }
 
-        if (!active && device.state !== 'offline' && retryCount === 2) {
+        if (!active && device.state !== 'offline' && retryCount === pingRetries) {
+          //Last attempt, mark offline
           log(`\x1b[31m[ERROR] \x1b[0m Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable after three attempts.`);
 
           device.state = 'offline';
           retryCount = 0;
         } else if (!active && device.state === 'active') {
+          // First failure
           if(broadlink.debug) log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable. (attempt ${retryCount})`);
 
           device.state = 'inactive';
           retryCount += 1;
         } else if (active && device.state !== 'active') {
-          if (device.state === 'inactive') log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) has been re-discovered.`);
+          // Device back
+          if (device.state === 'offline') log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) has been re-discovered.`);
 
           device.state = 'active';
           retryCount = 0;
