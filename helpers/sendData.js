@@ -60,6 +60,7 @@ const waitForDevice = (device, name, log, debug) => {
     }
 
     res();
+  });
 }
 
 const wait = delay => {
