@@ -31,29 +31,43 @@ const sendData = async ({host, hexData, log, name, debug}) => {
   if (!device.sendData) return log(`\x1b[31m[ERROR] \x1b[0mThe device at ${device.host.address} (${device.host.macAddress}) doesn't support the sending of IR or RF codes.`);
   if (hexData.includes('5aa5aa555')) return log(`\x1b[31m[ERROR] \x1b[0mThis type of hex code (5aa5aa555...) is no longer valid. Use the included "Learn Code" accessory to find new (decrypted) codes.`);
 
-  await waitForDevice(device, name, log, debug);
-
-  const hexDataBuffer = new Buffer(hexData, 'hex');
-  device.sendData(hexDataBuffer, debug, hexData);
-
-  log(`${name} sendHex (${device.host.address}; ${device.host.macAddress}) ${hexData}`);
-}
-
-const waitForDevice = async (device, name, log, debug) => {
-  let count = 0;
-
-  while (device.state !== 'active' && count < retryCount ) {
-    log(`\x1b[33m[DEBUG]\x1b[0m ${name} Device ${device.state}, pausing (attempt ${count})...`);
-    count++;
-
-    await wait(retryInterval);
-  }
-
-  if (count > retryCount) return log(`\x1b[31m[ERROR] \x1b[0mThe device at ${device.host.address} (${device.host.macAddress}) is not available.`);
-
+  waitForDevice(device, name, log, debug)
+  .then(() => {
+    const hexDataBuffer = new Buffer(hexData, 'hex');
+    device.sendData(hexDataBuffer, debug, hexData);
+    log(`${name} sendHex (${device.host.address}; ${device.host.macAddress}) ${hexData}`);
+  })
+  .catch(() => {
+    log(`\x1b[31m[ERROR] \x1b[0mThe device at ${device.host.address} (${device.host.macAddress}) is not available.`);
+  });
+  
   return;
 }
 
-const wait = delay => { return new Promise (res => { setTimeout(res, delay); }); }
+const waitForDevice = (device, name, log, debug) => {
+  return new Promise(async (res, rej) => {
+    let count = 0;
+
+    while (device.state !== 'active' && count < retryCount ) {
+      log(`\x1b[33m[DEBUG]\x1b[0m ${name} Device ${device.state}, pausing (attempt ${count})...`);
+      count++;
+
+      await wait(retryInterval);
+    }
+
+    if (count > retryCount) {
+      rej();
+    }
+
+    res();
+}
+
+const wait = delay => {
+  return new Promise(res => {
+    setTimeout(() => {
+      res();
+    }, delay);
+  });
+}
 
 module.exports = sendData
