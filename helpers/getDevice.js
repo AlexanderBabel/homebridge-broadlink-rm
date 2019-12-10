@@ -25,7 +25,7 @@ const startPing = (device, log) => {
             retryCount = 0;
           }
         }else{
-          if(retryCount >= pingRetries && device.state !== 'offline'){
+          if(retryCount > pingRetries && device.state !== 'offline'){
             //Last attempt, mark offline
             log(`\x1b[31m[ERROR] \x1b[0m Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable after three attempts.`);
 
