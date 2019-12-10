@@ -18,33 +18,27 @@ const startPing = (device, log) => {
            active = false;
         }
 
-        if (!active && device.state !== 'offline' && retryCount >= pingRetries) {
-          //Last attempt, mark offline
-          log(`\x1b[31m[ERROR] \x1b[0m Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable after three attempts.`);
+        
+        if(active){ 
+          if(device.state !== 'active) {
+            if (device.state === 'offline') log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) has been re-discovered.`);
+            device.state = 'active';
+            retryCount = 0;
+          }
+        }else{
+          if(retryCount >= pingRetries && device.state !== 'offline'){
+            //Last attempt, mark offline
+            log(`\x1b[31m[ERROR] \x1b[0m Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable after three attempts.`);
 
-          device.state = 'offline';
-        } else if (!active && device.state === 'active' && retryCount < pingRetries) {
-          // First failure
-          if(broadlink.debug) log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable. (attempt ${retryCount})`);
+            device.state = 'offline';
+          }else if(retryCount <= pingRetries){
+            //Inital Attempts
+            if(broadlink.debug) log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable. (attempt ${retryCount})`);
 
-          device.state = 'inactive';
-          retryCount += 1;
-        } else if (!active && device.state !== 'active' && retryCount < pingRetries) {
-          // Subsequent failure
-          if(broadlink.debug) log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable. (attempt ${retryCount})`);
-
-          device.state = 'inactive';
-          retryCount += 1;
-        } else if (active && device.state !== 'active') {
-          // Device back
-          if (device.state === 'offline') log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) has been re-discovered.`);
-
-          device.state = 'active';
-          retryCount = 0;
-        } else if (active && retryCount !== 0 ) {
-          //Active - reset retry counter
-          retryCount = 0;
-        }
+            device.state = 'inactive';
+            retryCount += 1;
+          }
+        }     
       }, {timeout: pingTimeout})
     } catch (err) {
       log(`\x1b[31m[ERROR] \x1b[0m Error pinging Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}): ${err}`);
