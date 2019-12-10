@@ -19,7 +19,7 @@ const startPing = (device, log) => {
         }
         
         if(active){ 
-          if(device.state !== 'active) {
+          if(device.state !== 'active') {
             if (device.state === 'offline') log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) has been re-discovered.`);
             device.state = 'active';
             retryCount = 0;
