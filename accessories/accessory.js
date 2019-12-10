@@ -43,12 +43,10 @@ class BroadlinkRMAccessory extends HomebridgeAccessory {
 
     if (typeof data === 'string') {
       sendData({ host, hexData: data, log, name, debug });
-      
       return;
     }
 
     await catchDelayCancelError(async () => {
-      
       // Itterate through each hex config in the array
       for (let index = 0; index < data.length; index++) {
         const { pause } = data[index];
