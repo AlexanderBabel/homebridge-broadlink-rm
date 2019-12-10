@@ -40,19 +40,18 @@ class BroadlinkRMAccessory extends HomebridgeAccessory {
 
   async performSend (data, actionCallback) {
     const { debug, config, host, log, name } = this;
+    let result = false;
 
     if (typeof data === 'string') {
-      sendData({ host, hexData: data, log, name, debug });
-
-      return;
+      return sendData({ host, hexData: data, log, name, debug });
     }
 
     await catchDelayCancelError(async () => {
+      
       // Itterate through each hex config in the array
       for (let index = 0; index < data.length; index++) {
         const { pause } = data[index];
-
-        await this.performRepeatSend(data[index], actionCallback);
+        result = result || await this.performRepeatSend(data[index], actionCallback);
 
         if (pause) {
           this.pauseTimeoutPromise = delayForDuration(pause);
@@ -60,24 +59,27 @@ class BroadlinkRMAccessory extends HomebridgeAccessory {
         }
       }
     });
+    return result;
   }
 
   async performRepeatSend (parentData, actionCallback) {
     const { host, log, name, debug } = this;
     let { data, interval, sendCount } = parentData;
-
+    let result = false;
+    
     sendCount = sendCount || 1
     if (sendCount > 1) interval = interval || 0.1;
 
     // Itterate through each hex config in the array
     for (let index = 0; index < sendCount; index++) {
-      sendData({ host, hexData: data, log, name, debug });
+      result = result || sendData({ host, hexData: data, log, name, debug });
 
       if (interval && index < sendCount - 1) {
         this.intervalTimeoutPromise = delayForDuration(interval);
         await this.intervalTimeoutPromise;
       }
     }
+    return result;
   }
 }
 
