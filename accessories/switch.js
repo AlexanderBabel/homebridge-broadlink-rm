@@ -99,12 +99,19 @@ class SwitchAccessory extends BroadlinkRMAccessory {
 
   async setSwitchState (hexData) {
     const { data, host, log, name, debug } = this;
+    let result = false;
+    
     this.stateChangeInProgress = true;
     this.reset();
-
-    if (hexData) await this.performSend(hexData);
     
-    this.checkAutoOnOff();
+    if (hexData) result = await this.performSend(hexData);
+    
+    if (result){
+      this.checkAutoOnOff();
+    }else{
+      log(`\x1b[31m[ERROR] \x1b[0m${name} failed to send code.`);
+      serviceManager.setCharacteristic(Characteristic.On, serviceManager.getCharacteristic(Characteristic.On));
+    }
   }
 
   async checkPingGrace () {
