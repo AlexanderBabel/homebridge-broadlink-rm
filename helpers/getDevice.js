@@ -2,9 +2,9 @@ const ping = require('ping');
 const broadlink = require('./broadlink')
 const delayForDuration = require('./delayForDuration')
 
-const pingFrequency = 3000;
-const pingTimeout = 5;
-const pingRetries = 2;
+const pingFrequency = 5000;
+const pingTimeout = 3;
+const pingRetries = 3;
 
 const startPing = (device, log) => {
   device.state = 'unknown';
