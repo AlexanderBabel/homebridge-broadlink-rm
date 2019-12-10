@@ -43,6 +43,7 @@ class BroadlinkRMAccessory extends HomebridgeAccessory {
 
     if (typeof data === 'string') {
       sendData({ host, hexData: data, log, name, debug });
+
       return;
     }
 
@@ -58,7 +59,6 @@ class BroadlinkRMAccessory extends HomebridgeAccessory {
         }
       }
     });
-    return result;
   }
 
   async performRepeatSend (parentData, actionCallback) {
@@ -77,7 +77,6 @@ class BroadlinkRMAccessory extends HomebridgeAccessory {
         await this.intervalTimeoutPromise;
       }
     }
-    return result;
   }
 }
 
