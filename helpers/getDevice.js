@@ -17,7 +17,6 @@ const startPing = (device, log) => {
            log(`\x1b[31m[ERROR] \x1b[0m Error pinging Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}): ${err}`);
            active = false;
         }
-
         
         if(active){ 
           if(device.state !== 'active) {
