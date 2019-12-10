@@ -98,7 +98,7 @@ class SwitchAccessory extends BroadlinkRMAccessory {
   }
 
   async setSwitchState (hexData) {
-    const { data, host, log, name, debug } = this;
+    const { data, host, log, name, debug, serviceManager } = this;
     let result = false;
     
     this.stateChangeInProgress = true;
