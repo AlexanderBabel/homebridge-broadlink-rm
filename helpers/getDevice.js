@@ -18,14 +18,19 @@ const startPing = (device, log) => {
            active = false;
         }
 
-        if (!active && device.state !== 'offline' && retryCount === pingRetries) {
+        if (!active && device.state !== 'offline' && retryCount >= pingRetries) {
           //Last attempt, mark offline
           log(`\x1b[31m[ERROR] \x1b[0m Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable after three attempts.`);
 
           device.state = 'offline';
-          retryCount = 0;
-        } else if (!active && device.state === 'active') {
+        } else if (!active && device.state === 'active' && retryCount < pingRetries) {
           // First failure
+          if(broadlink.debug) log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable. (attempt ${retryCount})`);
+
+          device.state = 'inactive';
+          retryCount += 1;
+        } else if (!active && device.state !== 'active' && retryCount < pingRetries) {
+          // Subsequent failure
           if(broadlink.debug) log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable. (attempt ${retryCount})`);
 
           device.state = 'inactive';
