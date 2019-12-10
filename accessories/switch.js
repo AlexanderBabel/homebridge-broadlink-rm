@@ -110,7 +110,6 @@ class SwitchAccessory extends BroadlinkRMAccessory {
       this.checkAutoOnOff();
     }else{
       log(`\x1b[31m[ERROR] \x1b[0m${name} failed to send code.`);
-      serviceManager.setCharacteristic(Characteristic.On, serviceManager.getCharacteristic(Characteristic.On));
     }
   }
 
