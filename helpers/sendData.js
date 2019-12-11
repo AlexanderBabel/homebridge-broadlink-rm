@@ -65,13 +65,13 @@ const waitForDevice = (device, name, log, debug) => {
     let count = 0;
 
     while (device.state !== 'active' && count < retryCount ) {
-      if(debug) log(`\x1b[33m[DEBUG]\x1b[0m ${name} Device ${device.state}, pausing (attempt ${count})...`);
+      if(debug) log(`\x1b[33m[DEBUG]\x1b[0m ${name} Device ${device.state}, pausing (attempt ${count+1})...`);
       count++;
 
       await wait(retryInterval);
     }
 
-    if (count > retryCount) {
+    if (count >= retryCount) {
       rej();
     }
 
