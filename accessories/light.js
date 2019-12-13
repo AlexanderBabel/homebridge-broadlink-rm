@@ -54,7 +54,37 @@ class LightAccessory extends SwitchAccessory {
   }
 
   async setSaturation () {
-    
+    await catchDelayCancelError(async () => {
+      const { config, data, host, log, name, state, debug, serviceManager} = this;
+      const { onDelay } = config;
+      const { off, on } = data;
+
+      this.reset();
+
+      if (!state.switchState) {
+
+        state.switchState = true;
+        serviceManager.refreshCharacteristicUI(Characteristic.On);
+
+        if (on) {
+          log(`${name} setSaturation: (turn on, wait ${onDelay}s)`);
+          await this.performSend(on);
+
+          log(`${name} setSaturation: (wait ${onDelay}s then send data)`);
+          this.onDelayTimeoutPromise = delayForDuration(onDelay);
+          await this.onDelayTimeoutPromise;
+        }
+      }
+      
+      var hexData ="";
+      log(`${name} setSaturation: (Updating to : hue:${state.hue} saturation:${state.saturation})`);
+      // Check for White colour and force the white hex code if found, and configured
+      if (state.saturation < 10 && data[`white`]) {
+        hexData = data[`white`];
+        log(`${name} setSaturation: (closest: white)`);
+        await this.performSend(hexData);
+      }
+    });
   }
 
   async setHue () {

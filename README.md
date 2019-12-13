@@ -22,12 +22,6 @@ This plugin allows you to control your RM Mini and RM Pro with HomeKit using the
 
 Full documentation can be found [here](https://lprhodes.github.io/slate/). With the following additional configuration options available:
 
-### Switch Accessory
-
-key | description | example | default
---- | ----------- | ------- | -------
-pingGrace (optional) | Pauses ping status changes for the specified period (seconds) to allow device to start-up/shutdown after the change | 15 | 10
-
 ### Aircon Accessory
 
 key | description | example | default
@@ -51,6 +45,19 @@ key | description
 --- | -----------
 data | Hex data stored as string.
 pseudo-mode (optional) | The mode we set when this hex is sent. i.e. "heat" or "cool". For graphical purposes only (hence use of the term "pseudo"). Not recommended for ModeX key-values.
+
+### Light Accessory
+
+#### "data" key-value object
+key | description
+--- | -----------
+white | A hex code string to be sent when the light colour is white (or very low saturation).
+
+### Switch Accessory
+
+key | description | example | default
+--- | ----------- | ------- | -------
+pingGrace (optional) | Pauses ping status changes for the specified period (seconds) to allow device to start-up/shutdown after the change | 15 | 10
 
 ### TV Accessory
 
