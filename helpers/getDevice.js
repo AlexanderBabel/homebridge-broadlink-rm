@@ -38,7 +38,6 @@ const startPing = (device, log) => {
     try {
       ping.pingHost(device.host.address, (err, target) => {
         if(err){
-          log(`\x1b[31m[ERROR] \x1b[0m Error pinging Broadlink RM device. (${target}, ${err.message})`);
           active = false;
         }else{
           active = true;
@@ -53,12 +52,12 @@ const startPing = (device, log) => {
         }else{
           if(retryCount > pingRetries && device.state !== 'offline'){
             //Last attempt, mark offline
-            log(`\x1b[31m[ERROR] \x1b[0m Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable after three attempts.`);
+            log(`\x1b[31m[ERROR] \x1b[0m Broadlink RM device is no longer reachable after three attempts (${target}, ${err.message}).`);
 
             device.state = 'offline';
           }else if(retryCount <= pingRetries){
             //Inital Attempts
-            if(broadlink.debug) log(`Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}) is no longer reachable. (attempt ${retryCount})`);
+            if(broadlink.debug) log(`Broadlink RM device is no longer reachable. (${target}, ${err.message}, attempt: ${retryCount})`);
 
             device.state = 'inactive';
             retryCount += 1;
@@ -66,7 +65,7 @@ const startPing = (device, log) => {
         }     
       }, {timeout: pingTimeout})
     } catch (err) {
-      log(`\x1b[31m[ERROR] \x1b[0m Error pinging Broadlink RM device at ${device.host.address} (${device.host.macAddress || ''}): ${err}`);
+      log(`\x1b[31m[ERROR] \x1b[0m Error pinging Broadlink RM device (${target}, ${err.message})`);
     }
   }, pingFrequency);
 }
