@@ -38,7 +38,7 @@ const startPing = (device, log) => {
     try {
       ping.pingHost(device.host.address, (err, target) => {
         if(err){
-          log(`\x1b[31m[ERROR] \x1b[0m Error pinging Broadlink RM device. (${target}, ${error.message})`);
+          log(`\x1b[31m[ERROR] \x1b[0m Error pinging Broadlink RM device. (${target}, ${err.message})`);
           active = false;
         }else{
           active = true;
