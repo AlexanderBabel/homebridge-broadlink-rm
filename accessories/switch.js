@@ -82,7 +82,7 @@ class SwitchAccessory extends BroadlinkRMAccessory {
 
   pingCallback (active) {
     let { debug, config, log, name, state, serviceManager } = this;
-    debug = true
+    //debug = true
 
     const previousState = state.switchState
     const newState = active ? true : false;

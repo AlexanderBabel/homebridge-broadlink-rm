@@ -82,22 +82,36 @@ class TVAccessory extends BroadlinkRMAccessory {
     ping(pingIPAddress, pingFrequency, this.pingCallback.bind(this));
   }
 
-  pingCallback(active) {
-    const { config, state, serviceManager } = this;
-    
+  pingCallback (active) {
+    let { debug, config, log, name, state, serviceManager } = this;
+    //debug = true
+
+    const previousState = state.switchState
+    const newState = active ? true : false;
+
+    // Only update Homkit if the switch state haven changed.
+    const hasStateChanged = (previousState === newState)
+    if (debug) log(`${name} pingCallback: state ${hasStateChanged ? 'not changed, ignoring' : 'changed'} (device ${newState ? 'active' : 'inactive'})`);
+
+    if (hasStateChanged) return
+
     if (this.stateChangeInProgress){ 
       return; 
     }
-
+    
     if (config.pingIPAddressStateOnly) {
-      state.switchState = active ? true : false;
-      serviceManager.refreshCharacteristicUI(Characteristic.Active);
+      if (debug) log(`${name} pingCallback: UI updated only`);
+
+      state.switchState = newState
+
+      serviceManager.refreshCharacteristicUI(Characteristic.On);
 
       return;
     }
+    
+    if (debug) log(`${name} pingCallback: UI updated and command sent`);
 
-    const value = active ? true : false;
-    serviceManager.setCharacteristic(Characteristic.Active, value);
+    serviceManager.setCharacteristic(Characteristic.On, newState);
   }
 
   async setSwitchState(hexData) {
