@@ -13,9 +13,9 @@ class TVAccessory extends BroadlinkRMAccessory {
 
   setDefaults() {
     const { config } = this;
-    config.pingFrequency = config.pingFrequency || 1;
     config.pingGrace = config.pingGrace || 10;
-
+    config.pingFrequency = Math.max(config.pingFrequency, 2);
+    
     config.offDuration = config.offDuration || 60;
     config.onDuration = config.onDuration || 60;
 
