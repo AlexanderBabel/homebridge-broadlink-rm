@@ -89,7 +89,7 @@ class SwitchAccessory extends BroadlinkRMAccessory {
 
     // Only update Homkit if the switch state haven changed.
     const hasStateChanged = (previousState === newState)
-    if (debug) log(`${name} pingCallback: state ${hasStateChanged ? 'not changed, ignoring' : 'changed'} (device ${newState ? 'active' : 'inactive'})`);
+    if (debug || !hasStateChanged) log(`${name} pingCallback: state ${hasStateChanged ? 'not changed, ignoring' : 'changed'} (device ${newState ? 'active' : 'inactive'})`);
 
     if (hasStateChanged) return
 
