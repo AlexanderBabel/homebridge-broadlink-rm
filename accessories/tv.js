@@ -104,14 +104,14 @@ class TVAccessory extends BroadlinkRMAccessory {
 
       state.switchState = newState
 
-      serviceManager.refreshCharacteristicUI(Characteristic.On);
+      serviceManager.refreshCharacteristicUI(Characteristic.Active);
 
       return;
     }
     
     if (debug) log(`${name} pingCallback: UI updated and command sent`);
 
-    serviceManager.setCharacteristic(Characteristic.On, newState);
+    serviceManager.setCharacteristic(Characteristic.Active, newState);
   }
 
   async setSwitchState(hexData) {
