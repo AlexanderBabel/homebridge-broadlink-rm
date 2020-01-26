@@ -89,15 +89,16 @@ class TVAccessory extends BroadlinkRMAccessory {
     const previousState = state.switchState
     const newState = active ? true : false;
 
+    //Ping Grace period check
+    if (this.stateChangeInProgress){ 
+      return; 
+    }
+    
     // Only update Homkit if the switch state haven changed.
     const hasStateChanged = (previousState === newState)
     if (debug || !hasStateChanged) log(`${name} pingCallback: state ${hasStateChanged ? 'not changed, ignoring' : 'changed'} (device ${newState ? 'active' : 'inactive'})`);
 
     if (hasStateChanged) return
-
-    if (this.stateChangeInProgress){ 
-      return; 
-    }
     
     if (config.pingIPAddressStateOnly) {
       if (debug) log(`${name} pingCallback: UI updated only`);
