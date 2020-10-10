@@ -16,10 +16,9 @@ There's been a lot of work done on the main fork to support some newer Broadlink
 
 # Homebridge Broadlink RM [[Original](https://github.com/lprhodes/homebridge-broadlink-rm)]
 
-## Introduction
-Welcome to the Broadlink RM Mini and Broadlink RM Pro plugin for [Homebridge](https://github.com/nfarina/homebridge).
+## About this fork
 
-This plugin allows you to control your RM Mini and RM Pro with HomeKit using the Home app and Siri.
+I am working on upgrades to the accessory specifications in this repository. For starters I am focused on the the fan, air-conditioners and heater accessories to help improve the user experience of the devices like portable ACs, Lasko tower fans and tower heaters, etc.
 
 ## Documentation
 
@@ -114,6 +113,14 @@ back | The hex code for this button function
 exit | The hex code for this button function
 playPause | The hex code for this button function
 info | The hex code for this button function
+
+### Fan Accessory
+
+#### Support for step size property to improve user experience of discrete fan speeds
+Add this under the data section of fan config
+| key | description | example | default |
+|--|--|--|--|
+| stepSize | Increments of fan speed. This will update Home app UI so that fan speed increases in steps. If your fan support 4 speeds and the step size should be 100/4 = 25. | 25 | 1 |
 
 ## Thanks
 Original: Thanks to @tattn (https://github.com/tattn/homebridge-rm-mini3), @PJCzx (https://github.com/PJCzx/homebridge-thermostat) @momodalo (https://github.com/momodalo/broadlinkjs) whose time and effort got me started.
